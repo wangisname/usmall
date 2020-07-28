@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { requestSpecAdd } from "../../../util/request";
+import { requestSpecAdd,requestSpecDetail, requestSpecUpdate } from "../../../util/request";
 import { mapActions, mapGetters } from "vuex";
 import { successAlert, warningAlert } from "../../../util/alert";
 export default {
@@ -91,7 +91,7 @@ export default {
 
       requestSpecAdd(this.form).then((res) => {
         if (res.data.code == 200) {
-          successAlert(res.data.msg);
+          successAlert("添加成功");
           //清空
           this.empty();
           //弹框消失
@@ -105,12 +105,35 @@ export default {
         }
       });
     },
-    // getDetail(id){
+    getDetail(id){
+      requestSpecDetail({id:id}).then(res=>{
+        this.form=res.data.list[0]
+        this.attrArr = JSON.parse(res.data.list[0].attrs).map((item) => ({
+          value: item,
+        }));
+      })
+    },
+    update(){
+      if (this.attrArr.some((item) => item.value == "")) {
+        warningAlert("属性规格均不能为空");
+        return;
+      }
+      this.form.attrs = JSON.stringify(this.attrArr.map((item) => item.value));
 
-    // },
-    // update(){
-
-    // }
+      requestSpecUpdate(this.form).then((res) => {
+        if (res.data.code == 200) {
+          successAlert("修改成功");
+          //清空
+          this.empty();
+          //弹框消失
+          this.cancel();
+          //重新获取角色列表数据
+          this.requestList();
+        } else {
+          warningAlert(res.data.msg);
+        }
+      });
+    }
   },
 };
 </script>

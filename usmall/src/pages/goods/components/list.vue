@@ -1,11 +1,24 @@
 <template>
   <div>
-    <el-table :data="list" style="width: 100%">
-      <el-table-column prop="id" label="规格编号" width="180"></el-table-column>
-      <el-table-column prop="specsname" label="规格名称" width="180"></el-table-column>
-      <el-table-column label="规格属性" width="180">
+    <el-table :data="list" border style="width: 100%">
+      <el-table-column prop="id" label="商品编号" width="80"></el-table-column>
+      <el-table-column prop="goodsname" label="商品名称" width="180"></el-table-column>
+
+      <el-table-column label="图片">
         <template slot-scope="scope">
-          <el-tag v-for="item in scope.row.attrs" :key="item.id">{{item}}</el-tag>
+          <img :src="$imgPre+scope.row.img" alt />
+        </template>
+      </el-table-column>
+      <el-table-column label="是否新品">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.status==1" type="primary">是</el-button>
+          <el-button v-else type="info">否</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="是否热卖">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.status==1" type="primary">是</el-button>
+          <el-button v-else type="info">否</el-button>
         </template>
       </el-table-column>
       <el-table-column label="状态">
@@ -21,8 +34,7 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <!-- 分页 -->
+      <!-- 分页 -->
 
     <el-pagination
       background
@@ -36,27 +48,20 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { requestSpecDelete } from "../../../util/request";
-import { successAlert, warningAlert } from '../../../util/alert';
+import {requestGoodsDelete} from '../../../util/request'
+import {successAlert,warningAlert} from '../../../util/alert'
 export default {
-  computed: {
-    ...mapGetters({
-      list: "spec/list",
-      total: "spec/total",
-      size: "spec/size",
-    }),
-  },
   methods: {
     ...mapActions({
-      requestList: "spec/requestList",
-      requestTotal: "spec/requestTotal",
-      changePage: "spec/changePage",
+      requestList: "goods/requestList",
+        requestTotal: "goods/requestTotal",
+        changePage: "goods/changePage",
     }),
     edit(id) {
       this.$emit("edit", id);
     },
     del(id) {
-      requestSpecDelete({id:id}).then(res=>{
+      requestGoodsDelete({id:id}).then(res=>{
         if(res.data.code==200){
           successAlert("删除成功")
           this.requestList()
@@ -72,6 +77,13 @@ export default {
         this.requestList()
     }
   },
+  computed: {
+    ...mapGetters({
+      list: "goods/list",
+      total: "goods/total",
+      size: "goods/size",
+    }),
+  },
   mounted() {
     this.requestList();
     this.requestTotal()
@@ -80,4 +92,7 @@ export default {
 </script>
 
 <style>
+img {
+  height: 80px;
+}
 </style>

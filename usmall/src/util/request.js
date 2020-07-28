@@ -232,10 +232,10 @@ export const requestSpecAdd = (params) => {
 }
 
 //商品规格总数
-export const requestSpecCount=()=>{
+export const requestSpecCount = () => {
     return axios({
-        url:baseUrl+"/api/specscount",
-        method:"get"
+        url: baseUrl + "/api/specscount",
+        method: "get"
     })
 }
 //商品规格列表
@@ -248,7 +248,7 @@ export const requestSpecList = (params) => {
 }
 
 //商品规格获取一条数据
-export const requestSpecDetail=(params)=>{
+export const requestSpecDetail = (params) => {
     return axios({
         url: baseUrl + "/api/specsinfo",
         method: "get",
@@ -257,29 +257,84 @@ export const requestSpecDetail=(params)=>{
 }
 
 //商品规格修改
-export const requestSpecUpdate=(params)=>{
+export const requestSpecUpdate = (params) => {
     return axios({
         url: baseUrl + "/api/specsedit",
         method: "post",
-        data:qs.stringify(params)
+        data: qs.stringify(params)
     })
 }
 
 //商品规格删除
-export const requestSpecDelete=(params)=>{
+export const requestSpecDelete = (params) => {
     return axios({
         url: baseUrl + "/api/specsdelete",
         method: "post",
-        data:qs.stringify(params)
+        data: qs.stringify(params)
     })
 }
 
 
 
+//商品管理添加
+export const requestGoodsAdd = (params) => {
+    let formData = new FormData()
+    for (let i in params) {
+        formData.append(i, params[i])
+    }
+    return axios({
+        url: baseUrl + "/api/goodsadd",
+        method: "post",
+        data: formData
+    })
+}
 
+//商品管理总数
+export const requestGoodsCount = () => {
+    return axios({
+        url: baseUrl + "/api/goodscount",
+        method: "get"
+    })
+}
+//商品管理列表
+export const requestGoodsList = (params) => {
+    return axios({
+        url: baseUrl + "/api/goodslist",
+        method: "get",
+        params: params
+    })
+}
 
+//商品管理获取一条数据
+export const requestGoodsDetail = (params) => {
+    return axios({
+        url: baseUrl + "/api/goodsinfo",
+        method: "get",
+        params
+    })
+}
 
+//商品管理修改
+export const requestGoodsUpdate = (params) => {
+    let formData = new FormData()
+    for (let i in params) {
+        formData.append(i, params[i])
+    }
+    return axios({
+        url: baseUrl + "/api/goodsedit",
+        method: "post",
+        data: formData
+    })
+}
 
+//商品管理删除
+export const requestGoodsDelete = (params) => {
+    return axios({
+        url: baseUrl + "/api/goodsdelete",
+        method: "post",
+        data: qs.stringify(params)
+    })
+}
 
 
 

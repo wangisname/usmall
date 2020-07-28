@@ -38,7 +38,7 @@ export default {
       this.info.show = true;
       this.info.title = "编辑商品规格";
       this.info.isAdd = false;
-      // this.$refs.add.getDetail(id);
+      this.$refs.add.getDetail(id);
     },
   },
 };
