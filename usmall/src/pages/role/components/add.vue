@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="info.title" :visible.sync="info.show">
+    <el-dialog :title="info.title" :visible.sync="info.show">
       <el-form :model="form">
         <el-form-item label="角色名称" label-width="80px">
           <el-input v-model="form.rolename" autocomplete="off"></el-input>
@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     //置空
-    empty() {
+     empty() {
       this.form = {
         rolename: "",
         menus: "",

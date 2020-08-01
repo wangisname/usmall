@@ -27,14 +27,14 @@ export default {
   methods: {
     add() {
       this.info.show = true;
-        this.info.title = "商品分类添加";
-        this.info.isAdd = true;
+      this.info.title = "商品分类添加";
+      this.info.isAdd = true;
     },
     edit(id) {
       this.info.show = true;
-        this.info.title = "商品分类编辑";
-        this.info.isAdd = false;
-        this.$refs.add.getDetail(id)
+      this.info.title = "商品分类编辑";
+      this.info.isAdd = false;
+      this.$refs.add.getDetail(id);
     },
   },
 };

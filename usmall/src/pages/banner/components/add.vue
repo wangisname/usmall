@@ -2,19 +2,12 @@
   <div class="add">
     <el-dialog :title="info.title" :visible.sync="info.show">
       <el-form :model="form">
-        <el-form-item label="上级分类" label-width="80px">
-          <el-select v-model="form.pid" placeholder="请选择活动区域">
-            <el-option label="--请选择--" value disabled="disabled"></el-option>
-            <el-option label="顶级分类" :value="0"></el-option>
+        <el-form-item label="标题" label-width="80px">
+          <el-input placeholder="请输入内容" v-model="form.title" clearable></el-input>
+        </el-form-item>
 
-            <!-- 动态数据 -->
-            <el-option :label="form.label" v-for="item in list" :key="item.id" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="分类名称" label-width="80px">
-          <el-input v-model="form.catename" placeholder="手机通讯" clearable></el-input>
-        </el-form-item>
         <!--  v-if="form.pid!==0" -->
+        <!-- :on-change="changeImg" -->
         <el-form-item label="图片" label-width="80px" v-if="form.pid!==0">
           <el-upload
             class="avatar-uploader"
@@ -26,7 +19,7 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-        <el-form-item label="分类名称" label-width="80px">
+        <el-form-item label="状态" label-width="80px">
           <el-switch v-model="form.status" :active-value="1" :inactive-value="2"></el-switch>
         </el-form-item>
       </el-form>
@@ -40,68 +33,73 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
-import { successAlert, warningAlert } from "../../../util/alert";
+import { mapActions, mapGetters } from "vuex";
 import {
-  requestCateAdd,
-  requestCateDetail,
-  requestCateUpdate,
+  requestBannerAdd,
+  requestBannerDetail,
+  requestBannerUpdate,
 } from "../../../util/request";
+import { successAlert, warningAlert } from "../../../util/alert";
 export default {
-  computed: {
-    ...mapGetters({
-      list: "cate/list",
-    }),
-  },
-
   props: ["info"],
   data() {
     return {
-      imageUrl: "",
       form: {
-        pid: 0,
-        catename: "",
+        title: "",
         img: null,
         status: 1,
       },
+      imageUrl: "",
     };
   },
   methods: {
-    cancel() {
-      this.info.show = false;
-      if (!this.info.isAdd) {
-        this.empty();
-      }
-    },
     empty() {
       this.form = {
-        pid: 0,
-        catename: "",
+        title: "",
         img: null,
         status: 1,
       };
       this.imageUrl = "";
     },
+    cancel() {
+      this.info.show = false;
+    },
     changeImg(e) {
-      //上传的图片不能超过2M
-      if (e.size > 2 * 1024 * 1024) {
+      if (e.size > 6 * 1024 * 1024) {
         warningAlert("图片太大，不能上传");
         return;
       }
-      //文件的后缀
       var extname = e.name.slice(e.name.lastIndexOf("."));
-      var extarr = [".jpg", ".gif", ".png", ".jpeg"];
+      var extarr = [".jpg", ".png", ".gif", ".jpeg"];
       if (!extarr.some((item) => item === extname)) {
         warningAlert("上传文件必须是图片");
         return;
       }
-
       var file = e.raw;
       this.imageUrl = URL.createObjectURL(file);
       this.form.img = file;
     },
     add() {
-      requestCateAdd(this.form).then((res) => {
+      requestBannerAdd(this.form).then((res) => {
+        if (res.data.code == 200) {
+          successAlert(res.data.msg);
+          this.cancel();
+          this.empty();
+          this.requestList();
+        } else {
+          warningAlert(res.data.msg);
+        }
+      });
+    },
+    getDetail(id) {
+      requestBannerDetail({ id: id }).then((res) => {
+        this.form = res.data.list;
+        this.form.id = id;
+        this.imageUrl = this.$imgPre + res.data.list.img;
+      });
+    },
+    update() {
+      requestBannerUpdate(this.form).then((res) => {
         if (res.data.code == 200) {
           successAlert(res.data.msg);
           this.empty();
@@ -113,44 +111,28 @@ export default {
       });
     },
     ...mapActions({
-      requestList: "cate/requestList",
+      requestList: "banner/requestList",
     }),
-    //获取某一条数据
-    getDetail(id) {
-      requestCateDetail({ id: id }).then((res) => {
-        this.form = res.data.list;
-        this.form.id = id;
-        this.imageUrl = this.$imgPre + res.data.list.img;
-      });
-    },
-    //修改
-    update() {
-      requestCateUpdate(this.form).then((res) => {
-        if (res.data.code == 200) {
-          successAlert(res.data.msg);
-          this.empty();
-          this.cancel();
-          this.requestList();
-        } else {
-          warningAlert(res.data.msg);
-        }
-      });
-    },
+  },
+  computed: {
+    ...mapGetters({
+      list:"banner/list"
+    })
   },
 };
 </script>
 
 <style scoped lang="stylus">
-.add>>>.el-upload {
-  border: 1px dashed #d9d9d9 !important;
+.add>>>.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
 
-.add>>>.el-upload:hover {
-  border: 1px dashed #409eff !important;
+.add>>>.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
 }
 
 .avatar-uploader-icon {

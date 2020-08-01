@@ -77,10 +77,12 @@ export default {
     },
     ...mapActions({
       requestRoleList: "role/requestList",
-      requestManageList: "manage/requestList",
+      requestManageList:"manage/requestList",
+      requestTotal:"manage/requestTotal"
     }),
     cancel() {
       this.info.show = false;
+      
     },
     add() {
       requestManageAdd(this.form).then((res) => {

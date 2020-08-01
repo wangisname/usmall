@@ -73,6 +73,7 @@ export default {
         "/goods",
         "/banner",
         "/seckill",
+        "/member"
       ],
       form: {
         pid: 0,
@@ -137,6 +138,8 @@ export default {
           this.empty()
           this.cancel()
           this.requestList()
+        }else{
+          warningAlert(res.data.msg);
         }
       })
     }
